@@ -1,0 +1,68 @@
+erDiagram
+    CIUDAD ||--o{ ZONA_COBERTURA : "se divide en"
+    CIUDAD ||--o{ SEDE : "ubica"
+    RESTAURANTE ||--|{ SEDE : "tiene"
+    SEDE ||--|{ SEDE_ZONA : "cubre"
+    ZONA_COBERTURA ||--o{ SEDE_ZONA : "es cubierta por"
+    RESTAURANTE ||--|{ PLATO : "ofrece"
+    CATEGORIA_PLATO ||--o{ PLATO : "clasifica"
+    PLATO ||--|{ PLATO_INGREDIENTE : "contiene"
+    INGREDIENTE ||--o{ PLATO_INGREDIENTE : "aparece en"
+    SEDE ||--o{ OFERTA_PLATO : "vende"
+    PLATO ||--o{ OFERTA_PLATO : "se vende en"
+    RESTAURANTE ||--o{ PROMOCION : "lanza"
+    PROMOCION ||--|{ PROMOCION_PLATO : "aplica a"
+    PLATO ||--o{ PROMOCION_PLATO : "participa en"
+
+    CIUDAD { int id_ciudad PK
+        string nombre
+        string departamento }
+    ZONA_COBERTURA { int id_zona PK
+        int id_ciudad FK
+        string nombre }
+    RESTAURANTE { int id_restaurante PK
+        string nombre UK
+        string tipo_cocina
+        text descripcion
+        bool activo }
+    SEDE { int id_sede PK
+        int id_restaurante FK
+        int id_ciudad FK
+        string nombre
+        string direccion
+        time hora_apertura
+        time hora_cierre }
+    SEDE_ZONA { int id_sede PK,FK
+        int id_zona PK,FK
+        decimal costo_envio
+        int tiempo_estimado }
+    CATEGORIA_PLATO { int id_categoria PK
+        string nombre UK }
+    PLATO { int id_plato PK
+        int id_restaurante FK
+        int id_categoria FK
+        string nombre
+        text descripcion
+        bool es_vegetariano }
+    INGREDIENTE { int id_ingrediente PK
+        string nombre UK
+        bool es_alergeno }
+    PLATO_INGREDIENTE { int id_plato PK,FK
+        int id_ingrediente PK,FK
+        bool es_opcional }
+    OFERTA_PLATO { int id_sede PK,FK
+        int id_plato PK,FK
+        int id_restaurante FK
+        decimal precio
+        bool disponible }
+    PROMOCION { int id_promocion PK
+        int id_restaurante FK
+        string titulo
+        text condiciones
+        string tipo_descuento
+        decimal valor_descuento
+        date fecha_inicio
+        date fecha_fin }
+    PROMOCION_PLATO { int id_promocion PK,FK
+        int id_plato PK,FK
+        int id_restaurante FK }

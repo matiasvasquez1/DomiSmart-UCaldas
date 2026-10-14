@@ -1,0 +1,82 @@
+erDiagram
+    RESTAURANTE |o--o{ DOCUMENTO : "describe"
+    PLATO |o--o{ IMAGEN : "aparece en"
+    USUARIO ||--o{ CONSULTA : "realiza"
+    DOCUMENTO ||--o{ IMAGEN : "contiene"
+    IMAGEN ||--o{ IMAGEN_ETIQUETA : "tiene"
+    ETIQUETA ||--o{ IMAGEN_ETIQUETA : "marca"
+    CONSULTA ||--o{ RESULTADO : "recupera"
+    DOCUMENTO |o--o{ RESULTADO : "es recuperado"
+    IMAGEN |o--o{ RESULTADO : "es recuperada"
+    CONSULTA ||--o| EVALUACION : "se evalua con"
+    DOCUMENTO ||--o{ EMBEDDINGS_TEXTO : "se fragmenta en"
+    IMAGEN ||--o{ EMBEDDINGS_IMAGEN : "se vectoriza en"
+    CONSULTA ||--o{ QUERY_EMBEDDINGS : "MiniLM 384"
+    CONSULTA ||--o{ QUERY_EMBEDDINGS_CLIP : "CLIP 512"
+
+    RESTAURANTE { int id_restaurante PK }
+    PLATO { int id_plato PK }
+    USUARIO { int id_usuario PK
+        string nombre
+        string email UK
+        string rol }
+    DOCUMENTO { int id_doc PK
+        int id_restaurante FK "NULL = general"
+        string titulo
+        string tipo_documento
+        char idioma
+        date fecha
+        string fuente
+        string licencia
+        text contenido_texto }
+    IMAGEN { int id_img PK
+        int id_doc FK
+        int id_plato FK "NULL"
+        string ruta_archivo UK
+        text descripcion
+        string autor_fuente
+        string licencia }
+    ETIQUETA { int id_etiqueta PK
+        string nombre UK }
+    IMAGEN_ETIQUETA { int id_img PK,FK
+        int id_etiqueta PK,FK }
+    CONSULTA { int id_consulta PK
+        int id_usuario FK
+        text texto_pregunta
+        timestamp fecha
+        string estrategia_chunking
+        text respuesta_generada
+        text respuesta_esperada }
+    RESULTADO { int id_resultado PK
+        int id_consulta FK
+        int id_doc FK "XOR id_img"
+        int id_img FK "XOR id_doc"
+        int posicion
+        float score_similitud }
+    EVALUACION { int id_eval PK
+        int id_consulta FK,UK
+        float faithfulness
+        float answer_relevancy
+        float context_recall
+        float context_precision
+        string modelo_eval
+        timestamp fecha }
+    EMBEDDINGS_TEXTO { int id_embedding PK
+        int id_doc FK
+        int chunk_id
+        string estrategia_chunking
+        text chunk_texto
+        vector_384 vector_embedding
+        string modelo }
+    EMBEDDINGS_IMAGEN { int id_embedding PK
+        int id_img FK
+        vector_512 vector_embedding
+        string modelo }
+    QUERY_EMBEDDINGS { int id_qemb PK
+        int id_consulta FK
+        vector_384 vector_embedding
+        string modelo }
+    QUERY_EMBEDDINGS_CLIP { int id_qemb_clip PK
+        int id_consulta FK
+        vector_512 vector_embedding
+        string modelo }
